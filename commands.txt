@@ -1,0 +1,11 @@
+# Primo esempio di comando
+ansible -a "/bin/echo hello" -u user 192.168.122.237 -vvvv
+
+# Playbook equivalente
+ansible-playbook -i hosts  -vvvv 1-hello.yml
+
+# Innestare i play in un playbook
+ansible-playbook -i hosts  -vvvv 2-two-hellos.yml
+
+# Cominciamo a fare qualcosa
+ansible-playbook -i hosts  -vvvv 3-do-something.yml

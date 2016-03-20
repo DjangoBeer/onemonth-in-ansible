@@ -1,0 +1,25 @@
+
+---
+- hosts: servers
+  remote_user: user
+  become: yes
+  become_user: root
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+  - name: Hello
+    command: echo "hello"
+
+- hosts: webservers
+  remote_user: user
+  become: yes
+  become_user: root
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+  - name: Hello
+    command: echo "new task"

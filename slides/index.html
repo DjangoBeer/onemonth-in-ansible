@@ -1,0 +1,446 @@
+<!--
+slidedeck: A modification of the Google IO 2012 HTML5 slide template
+URL: https://github.com/rmcgibbo/slidedeck
+
+Based on https://github.com/francescolaffi/elastic-google-io-slides, and
+ultimately:
+
+Google IO 2012 HTML5 Slide Template
+Authors: Eric Bidelman <ebidel@gmail.com>
+         Luke Mahe <lukem@google.com>
+URL: https://code.google.com/p/io-2012-slides
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title> One month in Ansible</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <!--This one seems to work all the time, but really small on ipad-->
+  <!--<meta name="viewport" content="initial-scale=0.4">-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+   <link rel="shortcut icon" href=" https://www.nephila.it/favicon.ico"/> 
+  <link rel="stylesheet" media="all" href="theme/css/default.css">
+  <link rel="stylesheet" media="all" href="theme/css/custom.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="theme/css/phone.css">
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="js/slides", src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.14/require.min.js"></script>
+
+
+  <!-- MathJax support  -->
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    showProcessingMessages: false,
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    TeX: {
+      extensions: ["color.js"]
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+  </script>
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <div style="display:hidden">
+  \[
+    \definecolor{data}{RGB}{18,110,213}
+    \definecolor{unknown}{RGB}{217,86,16}
+    \definecolor{learned}{RGB}{175,114,176}
+  \]
+  </div>
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+<slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+
+    <h1> One month in Ansible</h1>
+    <h2> A first dive in Ansible</h2>
+    <p> Iacopo Spalletti</p>
+  </hgroup>
+</slide>
+
+
+<slide  >
+  
+    <hgroup>
+      <h2>What the heck is it?</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul class="build">
+<li>An orchestration tool to handle multiple servers</li>
+<li>
+<p>Control multiple servers with configuration files</p>
+<ul class="build">
+<li>Stateless</li>
+<li>Serverless</li>
+</ul>
+</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>why not ssh?</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul class="build">
+<li>
+<p>raw ssh does not scale</p>
+<ul class="build">
+<li>try managing dozens of servers with ssh!</li>
+</ul>
+</li>
+<li>
+<p>Ansible uses ssh to tunnel commands!</p>
+</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>How it works?</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul class="build">
+<li>inventory of hosts</li>
+<li>
+<p>plays</p>
+<ul class="build">
+<li>sets of commands</li>
+</ul>
+</li>
+<li>
+<p>playbooks</p>
+<ul class="build">
+<li>sets of plays</li>
+</ul>
+</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Stateless?</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p>You don't need to know</p></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Serverless?</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul class="build">
+<li>no <strong>ansible server</strong>, just a <strong>Control machine</strong></li>
+<li><strong>Control machine</strong>: any machine with a set of plays and playbooks</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>what are plays?</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><pre class="prettyprint" data-lang="yaml">
+
+- hosts: servers
+  remote_user: user
+
+  tasks:
+  - name: Hello
+    command: echo "hello"
+
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>what's a command?</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p>Well, almost anything</p>
+<h3>shell command</h3>
+<pre class="prettyprint" data-lang="yaml">
+    command: echo "hello"
+</pre>
+
+<h3>module command</h3>
+<pre class="prettyprint" data-lang="yaml">
+    apt: pkg=vim state=installed
+</pre>
+
+<p>Compiled python scripts transferred via ssh and executed on the remote node </p></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Prepare the control machine</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><pre class="prettyprint" data-lang="debian/ubuntu">
+    $ sudo apt-get install software-properties-common
+    $ sudo apt-add-repository ppa:ansible/ansible
+    $ sudo apt-get update
+    $ sudo apt-get install ansible
+</pre>
+
+<pre class="prettyprint" data-lang="arch">
+    $ pacman -S ansible
+</pre>
+
+<pre class="prettyprint" data-lang="Mac OS">
+    $ pip install ansible
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>server requirements?</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p>Minimal:</p>
+<ul class="build">
+<li><strong>ssh</strong></li>
+<li><strong>python-simplejson</strong></li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>execute command from local shell</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><h2>Say hello!</h2>
+<pre class="prettyprint" data-lang="bash">
+    $ ansible -a "/bin/echo hello" -u user 192.168.122.237 -vvvv
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>execute a play</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><h2>Say hello again!</h2>
+<pre class="prettyprint" data-lang="bash">
+    $ ansible-playbook -i hosts -vvvv 1-hello.yml
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>plays can be appened in a playbook</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><pre class="prettyprint" data-lang="bash">
+    $ ansible-playbook -i hosts -vvvv 2-two-hellos.yml
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Let's do something real!</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><pre class="prettyprint" data-lang="bash">
+    $ ansible-playbook -i hosts -vvvv 3-do-something.yml
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Elements</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul class="build">
+<li>Hosts</li>
+<li>Tasks</li>
+<li>Variables</li>
+<li>Roles</li>
+<li>Templates</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Hosts</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul class="build">
+<li>
+<p><strong>Control machine</strong> has an <strong>inventory</strong> of hosts</p>
+<p><pre class="prettyprint" data-lang="bash">
+192.168.122.237
+192.168.122.102</p>
+<p>[webservers]
+192.168.122.237</p>
+<p>[database]
+192.168.122.102
+</pre></p>
+</li>
+<li>
+<p>Commands sent to a subset of the hosts in inventory</p>
+</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Tasks</h2>
+      <h3></h3>
+    </hgroup>
+    <article ></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Variables</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p>Variables makes playbook very flexible</p>
+<p>Defined in:</p>
+<ul>
+<li>vars files</li>
+<li>command line</li>
+<li>facts (host-dependent information</li>
+<li>tasks (saving output)</li>
+</ul>
+<pre class="prettyprint" data-lang="bash">
+    $ ansible-playbook -i hosts -e package=less 4-use-variables.yml
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Roles</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p>Roles allows to group tasks by "topic"</p>
+<pre class="prettyprint" data-lang="bash">
+
+- hosts: webservers
+  remote_user: user
+  become: yes
+  become_user: root
+
+  vars_files:
+    - vars.yml
+
+  roles:
+    - { role: nginx }
+
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Templates</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul>
+<li>Ansible manages services by </li>
+<li>Uses Jinja2 template engine</li>
+</ul>
+<pre class="prettyprint" data-lang="command">
+- name: Add basic configuration files for wan servers
+  template: src=nginx.con dest=/etc/nginx/sites-available/{{ hostname }}.conf
+</pre>
+
+<pre class="prettyprint" data-lang="template">
+server {
+    listen 80;
+    server_name {{ hostname }};
+
+    location / {
+
+        proxy_pass http://unix:{{socket}}:/;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+
+    }
+}
+</pre></article>
+ 
+</slide>
+
+
+<slide class="thank-you-slide segue nobackground">
+  <!-- <aside class="gdbar right"><img src="images/google_developers_icon_128.png"></aside> -->
+  <article class="flexbox vleft auto-fadein">
+    <h2> Thanks everyone!</h2>
+    <p></p>
+  </article>
+  <p data-config-contact class="auto-fadein"> <span>www</span> <a href="https://www.nephila.it/">Nephila</a><br/> <span>github</span> <a href="https://github.com/yakkys">yakkys</a></p>
+  </p>
+</slide>
+
+<slide class="backdrop"></slide>
+
+</slides>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-XXXXXXXX-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body>
+</html>
